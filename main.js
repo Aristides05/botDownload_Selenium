@@ -1,9 +1,9 @@
-const { profile } = require("console");
 const { Builder, By } = require("selenium-webdriver");
 const firefox = require('selenium-webdriver/firefox');
 
 const DEFAULT_DIR = "C:\\Users\\allan\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles";
-const PROFILE = ["mm9kcsy8.GOMES", "wmtulw9d.STORE", "hbbq4l3q.ROCCO", "v3sv2zay.MDOAS"];           //PROFILES
+const PROFILE = ["gk7h5rvv.Gomes", "yfw7hgz1.Store", "j2pdj1er.Rocco", "vf7ve5gj.Modas"];           //PROFILES
+const PROFILE_ENTITY = ["ENTITYZA5DLHLE8215", "ENTITY1CYX8CNAV1RAA", "ENTITY2X8CIDJBWBZDA", "ENTITY178U66HOFEQW5"];
 
 const SELECTORS = ["span.sc-storm-ui-30041982__sc-may1nv-1:nth-child(4) > button:nth-child(1)",     //BOTAO PERFIL
                    ".sc-storm-ui-30041982__sc-amnlzo-2",                                            //BOTAO SELECIONAR LINGUA
@@ -19,23 +19,26 @@ const SELECTORS = ["span.sc-storm-ui-30041982__sc-may1nv-1:nth-child(4) > button
                    "button.dQwwDk:nth-child(2)",                                                    //BOTAO SOLICITAR SPREADSHEET
                    ".dQwwDk"];
 
-async function main() {
+function main(){
+    execRequest();
+}
+
+async function execRequest() {
     for(let i = 0; i < PROFILE.length; i++){
-        runAuto(PROFILE[i]);
-        await sleep(11000);
+        await runAuto(PROFILE[i], PROFILE_ENTITY[i]);
     }
 }
 
-async function runAuto(profile) {
+async function runAuto(profile, profile_entity) {
     const options = new firefox.Options();
     options.setProfile(`${DEFAULT_DIR}\\${profile}`);
 
     const browser = await new Builder().forBrowser('firefox').setFirefoxOptions(options).build();
     await browser.manage().setTimeouts({ implicit: 2000 });
 
-    await browser.get("https://advertising.amazon.com.br/bulksheet/HomePage");
+    await browser.get(`https://advertising.amazon.com.br/bulksheet/HomePage/?entityId=${profile_entity}`); //
     await pathAuto(SELECTORS);
-    //await navegador.quit();
+    await browser.quit();
 
     async function pathAuto(selectors) {
         for (let i = 0; i < selectors.length; i++) {
@@ -46,11 +49,6 @@ async function runAuto(profile) {
     async function clickComponent(selectorCSS) {
         await browser.findElement(By.css(selectorCSS)).then(el => el.click());
     }
-
-}
-
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 main();
